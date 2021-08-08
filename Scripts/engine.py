@@ -42,11 +42,7 @@ def train_fn(data_loader, model, optimizer, device, scheduler):
         model.zero_grad()
 
         output = model(input_ids=input_ids, attention_mask = attention_mask, token_type_ids = token_type_ids)
-        print(f'Shapes - {output.shape}, {target.shape}')
-        print(output, target)
         loss = loss_fn(output, target)
-        print(f'Loss - {loss}')
-        print(output, target)
         train_losses.append(loss.item())
         output = torch.log_softmax(output, dim = 1)
         output = torch.argmax(output, dim = 1)
