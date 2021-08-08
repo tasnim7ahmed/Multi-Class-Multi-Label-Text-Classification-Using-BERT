@@ -7,7 +7,7 @@ from sklearn.metrics import f1_score
 import warnings
 
 import engine
-from model import BertFGBC
+from model import BertSAUC
 from dataset import Dataset
 from utils import train_validate_test_split
 from common import get_parser
@@ -22,27 +22,28 @@ torch.cuda.manual_seed(args.seed)
 
 def run():
     df = pd.read_csv(args.dataset_file).dropna()
-    print(set(df.label.values))
-    
     train_df, valid_df, test_df = train_validate_test_split(df)
 
     print("train len - {}, valid len - {}, test len - {}".format(len(train_df), len(valid_df),len(test_df)))
 
-    train_dataset = Dataset(text=train_df.text.values, target=train_df.target.values)
+    Label_Columns = train_df.columns.tolist()[3::2]
+    train_dataset = Dataset(text=train_df.comment.values, target=train_df[Label_Columns].values)
     train_data_loader = torch.utils.data.DataLoader(
         dataset = train_dataset,
         batch_size = args.train_batch_size,
         shuffle = True
     )
 
-    valid_dataset = Dataset(text=valid_df.text.values, target=valid_df.target.values)
+    Label_Columns = valid_df.columns.tolist()[3::2]
+    valid_dataset = Dataset(text=valid_df.comment.values, target=valid_df[Label_Columns].values)
     valid_data_loader = torch.utils.data.DataLoader(
         dataset = valid_dataset,
         batch_size = args.valid_batch_size,
         shuffle = True
     )
 
-    test_dataset = Dataset(text=test_df.text.values, target=test_df.target.values)
+    Label_Columns = test_df.columns.tolist()[3::2]
+    test_dataset = Dataset(text=test_df.comment.values, target=test_df[Label_Columns].values)
     test_data_loader = torch.utils.data.DataLoader(
         dataset = test_dataset,
         batch_size = args.test_batch_size,
@@ -50,7 +51,7 @@ def run():
     )
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = BertFGBC()
+    model = BertSAUC()
     model = model.to(device)
 
     num_train_steps = int(len(train_df) / args.train_batch_size * args.epochs)

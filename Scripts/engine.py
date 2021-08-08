@@ -15,7 +15,7 @@ torch.manual_seed(args.seed)
 torch.cuda.manual_seed(args.seed)
 
 def loss_fn(output, target):
-    return nn.CrossEntropyLoss()(output, target)
+    return nn.BCELoss()(output, target)
 
 
 def train_fn(data_loader, model, optimizer, device, scheduler):
@@ -36,7 +36,7 @@ def train_fn(data_loader, model, optimizer, device, scheduler):
         input_ids = input_ids.to(device, dtype = torch.long)
         attention_mask = attention_mask.to(device, dtype = torch.long)
         token_type_ids = token_type_ids.to(device, dtype=torch.long)
-        target = target.to(device, dtype=torch.long)
+        target = target.to(device, dtype=torch.float)
 
         model.zero_grad()
 
@@ -79,7 +79,7 @@ def eval_fn(data_loader, model, device):
             input_ids = input_ids.to(device, dtype=torch.long)
             attention_mask = attention_mask.to(device, dtype=torch.long)
             token_type_ids = token_type_ids.to(device, dtype=torch.long)
-            target = target.to(device, dtype=torch.long)
+            target = target.to(device, dtype=torch.float)
 
             output = model(
                 input_ids=input_ids,
@@ -113,7 +113,7 @@ def test_eval_fn(data_loader, model, device):
             input_ids = input_ids.to(device, dtype=torch.long)
             attention_mask = attention_mask.to(device, dtype=torch.long)
             token_type_ids = token_type_ids.to(device, dtype=torch.long)
-            target = target.to(device, dtype=torch.long)
+            target = target.to(device, dtype=torch.float)
 
             output = model(
                 input_ids=input_ids,

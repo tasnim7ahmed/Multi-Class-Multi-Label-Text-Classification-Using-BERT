@@ -11,7 +11,7 @@ np.random.seed(args.seed)
 torch.manual_seed(args.seed)
 torch.cuda.manual_seed(args.seed)
 
-class BertFGBC(nn.Module):
+class BertSAUC(nn.Module):
     def __init__(self):
         super().__init__()
         self.Bert = BertModel.from_pretrained(args.pretrained_model_name)
@@ -27,6 +27,6 @@ class BertFGBC(nn.Module):
         )
 
         bo = self.Bert_drop(o2)
-        output = self.out(bo)
+        output = torch.sigmoid(self.out(bo))
 
         return output

@@ -40,14 +40,22 @@ class Dataset:
             "input_ids":torch.tensor(input_ids,dtype = torch.long),
             "attention_mask":torch.tensor(attention_mask, dtype = torch.long),
             "token_type_ids":torch.tensor(token_type_ids, dtype = torch.long),
-            "target":torch.tensor(self.target[item], dtype = torch.long)
+            "target":torch.tensor(self.target[item], dtype = torch.float)
         }
 
 if __name__=="__main__":
     df = pd.read_csv(args.dataset_file).dropna()
-    print(set(df['label'].values))
-    dataset = Dataset(text=df.text.values, target=df.target.values)
-    print(df.iloc[1]['text'])
+    Label_Columns = df.columns.tolist()[3::2]
+    print(len(Label_Columns))
+    print(df[Label_Columns].sum().sort_values())
+    categorized_comment = df[df[Label_Columns].sum(axis=1) > 0]
+    uncategorized_comment = df[df[Label_Columns].sum(axis=1) == 0]
+    print(f'Categorized - {len(categorized_comment)}, Uncategorized - {len(uncategorized_comment)}')
+    sample_row = df.iloc[0]
+    print(sample_row.comment)
+    print(sample_row[Label_Columns].to_dict())
+    dataset = Dataset(text=df.comment.values, target=df[Label_Columns].values)
+    print(df.iloc[1]['comment'])
     print(dataset[1])
 
     
