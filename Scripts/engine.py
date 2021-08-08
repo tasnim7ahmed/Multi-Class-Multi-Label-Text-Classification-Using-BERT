@@ -122,8 +122,8 @@ def test_eval_fn(data_loader, model, device):
                 token_type_ids=token_type_ids
             )
             loss = loss_fn(output, target)
-            output = torch.log_softmax(output, dim = 1)
-            output = torch.argmax(output, dim = 1)
+            # output = torch.log_softmax(output, dim = 1)
+            # output = torch.argmax(output, dim = 1)
             val_losses.append(loss.item())
             final_target.extend(target.cpu().detach().numpy().tolist())
             final_output.extend(output.cpu().detach().numpy().tolist())
