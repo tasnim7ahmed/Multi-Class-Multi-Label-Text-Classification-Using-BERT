@@ -61,6 +61,7 @@ def train_fn(data_loader, model, optimizer, device, scheduler):
         final_output.append(output.flatten())
     final_target = torch.stack(final_target).detach().cpu()
     final_output = torch.stack(final_output).detach().cpu()
+    print(final_target, final_output)
     accuracy = torchmetrics.Accuracy(final_output, final_target)
     return accuracy, np.mean(train_losses)
 
