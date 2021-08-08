@@ -59,7 +59,7 @@ def train_fn(data_loader, model, optimizer, device, scheduler):
         progrss_bar.set_postfix(loss = losses.avg)
         final_target.extend(target.cpu().detach().numpy().tolist())
         final_output.extend(output.cpu().detach().numpy().tolist())
-    f1 = torchmetrics.F1(final_target, final_output, average='weighted')
+    f1 = torchmetrics.F1(final_target, final_output, threshold = 0.5, average='weighted')
     return f1, np.mean(train_losses)
 
 def eval_fn(data_loader, model, device):
@@ -92,7 +92,7 @@ def eval_fn(data_loader, model, device):
             val_losses.append(loss.item())
             final_target.extend(target.cpu().detach().numpy().tolist())
             final_output.extend(output.cpu().detach().numpy().tolist())
-    f1 = torchmetrics.F1(final_target, final_output, average='weighted')
+    f1 = torchmetrics.F1(final_target, final_output, threshold = 0.5, average='weighted')
     return f1, np.mean(val_losses)
 
 def test_eval_fn(data_loader, model, device):
