@@ -35,5 +35,5 @@ def test_evaluate(test_df, test_data_loader, model, device):
     #pred_test = test_df[['text', 'label', 'target', 'y_pred']]
     test_df.to_csv(f'{args.output_path}test_acc---{acc}.csv', index = False)
 
-    conf_mat = torchmetrics.ConfusionMatrix(num_classes = 8, multilabel = True, normalization = 'true')
+    conf_mat = torchmetrics.ConfusionMatrix(num_classes = 8, multilabel = True)
     print(conf_mat(torch.tensor(y_pred), torch.tensor(y_test)))
