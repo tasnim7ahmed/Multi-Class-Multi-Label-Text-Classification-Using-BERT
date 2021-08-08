@@ -1,5 +1,6 @@
 from operator import index
 import numpy as np
+from numpy.lib.function_base import average
 import torch
 import torchmetrics
 from sklearn.metrics import confusion_matrix, classification_report, matthews_corrcoef, f1_score, accuracy_score, precision_score, recall_score
@@ -18,9 +19,9 @@ def test_evaluate(test_df, test_data_loader, model, device):
     y_pred, y_test = test_eval_fn(test_data_loader, model, device)
 
     acc = torchmetrics.Accuracy()
-    precision = torchmetrics.Precision()
-    recall = torchmetrics.Recall()
-    f1 = torchmetrics.F1()
+    precision = torchmetrics.Precision(average = 'weighted')
+    recall = torchmetrics.Recall(average = 'weighted')
+    f1 = torchmetrics.F1(average = 'weighted')
     acc_val = acc(torch.tensor(y_pred), torch.tensor(y_test))
     precision_val = precision(torch.tensor(y_pred), torch.tensor(y_test))
     recall_val = recall(torch.tensor(y_pred), torch.tensor(y_test))
@@ -34,5 +35,5 @@ def test_evaluate(test_df, test_data_loader, model, device):
     #pred_test = test_df[['text', 'label', 'target', 'y_pred']]
     test_df.to_csv(f'{args.output_path}test_acc---{acc}.csv', index = False)
 
-    conf_mat = torchmetrics.ConfusionMatrix()
+    conf_mat = torchmetrics.ConfusionMatrix(num_classes = 8, multilabel = True, normalization = 'true')
     print(conf_mat(torch.tensor(y_pred), torch.tensor(y_test)))
