@@ -57,10 +57,12 @@ def train_fn(data_loader, model, optimizer, device, scheduler):
         scheduler.step() # Update scheduler
         losses.update(loss.item(), input_ids.size(0))
         progrss_bar.set_postfix(loss = losses.avg)
-        final_target.extend(target.cpu().detach().numpy().tolist())
-        final_output.extend(output.cpu().detach().numpy().tolist())
-    f1 = torchmetrics.F1(final_target, final_output, threshold = 0.5, average='weighted')
-    return f1, np.mean(train_losses)
+        final_target.append(target.flatten())
+        final_output.append(output.flatten())
+    final_target = torch.stack(final_target).detach().cpu()
+    final_output = torch.stack(final_output).detach().cpu()
+    accuracy = torchmetrics.Accuracy(final_output, final_target, threshold = 0.5)
+    return accuracy, np.mean(train_losses)
 
 def eval_fn(data_loader, model, device):
     model.eval()
