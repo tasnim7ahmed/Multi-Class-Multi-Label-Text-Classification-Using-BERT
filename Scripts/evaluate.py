@@ -16,7 +16,7 @@ torch.cuda.manual_seed(args.seed)
 
 def test_evaluate(test_df, test_data_loader, model, device):
     y_pred, y_test = test_eval_fn(test_data_loader, model, device)
-    print(y_pred, y_test)
+
     acc = torchmetrics.Accuracy()
     precision = torchmetrics.Precision()
     recall = torchmetrics.Recall()
