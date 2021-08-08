@@ -44,8 +44,8 @@ def train_fn(data_loader, model, optimizer, device, scheduler):
         output = model(input_ids=input_ids, attention_mask = attention_mask, token_type_ids = token_type_ids)
         loss = loss_fn(output, target)
         train_losses.append(loss.item())
-        output = torch.log_softmax(output, dim = 1)
-        output = torch.argmax(output, dim = 1)
+        # output = torch.log_softmax(output, dim = 1)
+        # output = torch.argmax(output, dim = 1)
         end = time.time()
         
         # if(ii%100 == 0 and ii!=0) or (ii == len(data_loader)-1):
@@ -57,14 +57,11 @@ def train_fn(data_loader, model, optimizer, device, scheduler):
         scheduler.step() # Update scheduler
         losses.update(loss.item(), input_ids.size(0))
         progrss_bar.set_postfix(loss = losses.avg)
-        final_target.append(target.flatten())
-        final_output.append(output.flatten())
-    final_target = torch.stack(final_target).detach().cpu()
-    final_output = torch.stack(final_output).detach().cpu()
-    final_output = np.round(final_output)
-    print(final_target, final_output)
-    accuracy = accuracy_score(final_target, final_output)
-    return accuracy, np.mean(train_losses)
+        final_target.extend(target.cpu().detach().numpy().tolist())
+        final_output.extend(output.cpu().detach().numpy().tolist())
+    accuracy = torchmetrics.Accuracy()
+    acc = (accuracy(torch.tensor(final_output), torch.tensor(final_target)))
+    return acc.item(), np.mean(train_losses)
 
 def eval_fn(data_loader, model, device):
     model.eval()
@@ -91,13 +88,14 @@ def eval_fn(data_loader, model, device):
                 token_type_ids=token_type_ids
             )
             loss = loss_fn(output, target)
-            output = torch.log_softmax(output, dim = 1)
-            output = torch.argmax(output, dim = 1)
+            # output = torch.log_softmax(output, dim = 1)
+            # output = torch.argmax(output, dim = 1)
             val_losses.append(loss.item())
             final_target.extend(target.cpu().detach().numpy().tolist())
             final_output.extend(output.cpu().detach().numpy().tolist())
-    f1 = torchmetrics.F1(final_target, final_output, threshold = 0.5, average='weighted')
-    return f1, np.mean(val_losses)
+    accuracy = torchmetrics.Accuracy()
+    acc = (accuracy(torch.tensor(final_output), torch.tensor(final_target)))
+    return acc.item(), np.mean(val_losses)
 
 def test_eval_fn(data_loader, model, device):
     model.eval()
