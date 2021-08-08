@@ -19,9 +19,9 @@ def test_evaluate(test_df, test_data_loader, model, device):
     y_pred, y_test = test_eval_fn(test_data_loader, model, device)
 
     acc = torchmetrics.Accuracy()
-    precision = torchmetrics.Precision(average = 'weighted')
-    recall = torchmetrics.Recall(average = 'weighted')
-    f1 = torchmetrics.F1(average = 'weighted')
+    precision = torchmetrics.Precision(num_classes = 8, average = 'weighted')
+    recall = torchmetrics.Recall(num_classes = 8, average = 'weighted')
+    f1 = torchmetrics.F1(num_classes = 8, average = 'weighted')
     acc_val = acc(torch.tensor(y_pred), torch.tensor(y_test))
     precision_val = precision(torch.tensor(y_pred), torch.tensor(y_test))
     recall_val = recall(torch.tensor(y_pred), torch.tensor(y_test))
