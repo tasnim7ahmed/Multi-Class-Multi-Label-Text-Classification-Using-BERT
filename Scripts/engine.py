@@ -114,7 +114,7 @@ def test_eval_fn(data_loader, model, device):
             input_ids = input_ids.to(device, dtype=torch.long)
             attention_mask = attention_mask.to(device, dtype=torch.long)
             token_type_ids = token_type_ids.to(device, dtype=torch.long)
-            target = target.to(device, dtype=torch.float)
+            target = target.to(device, dtype=torch.long)
 
             output = model(
                 input_ids=input_ids,
