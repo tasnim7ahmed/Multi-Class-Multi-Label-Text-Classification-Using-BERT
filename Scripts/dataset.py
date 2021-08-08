@@ -40,7 +40,7 @@ class Dataset:
             "input_ids":torch.tensor(input_ids,dtype = torch.long),
             "attention_mask":torch.tensor(attention_mask, dtype = torch.long),
             "token_type_ids":torch.tensor(token_type_ids, dtype = torch.long),
-            "target":torch.tensor(self.target[item], dtype = torch.float)
+            "target":torch.tensor(self.target[item], dtype = torch.long)
         }
 
 if __name__=="__main__":

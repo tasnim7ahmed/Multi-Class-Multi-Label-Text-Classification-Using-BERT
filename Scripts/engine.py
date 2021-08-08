@@ -3,7 +3,7 @@ import torch.nn as nn
 from tqdm import tqdm
 import time
 import numpy as np
-from sklearn.metrics import f1_score
+from sklearn.metrics import accuracy_score
 import torchmetrics
 
 import utils
@@ -16,7 +16,7 @@ torch.manual_seed(args.seed)
 torch.cuda.manual_seed(args.seed)
 
 def loss_fn(output, target):
-    return nn.BCELoss()(output, target)
+    return nn.BCELoss()(output, target.float())
 
 
 def train_fn(data_loader, model, optimizer, device, scheduler):
@@ -37,12 +37,16 @@ def train_fn(data_loader, model, optimizer, device, scheduler):
         input_ids = input_ids.to(device, dtype = torch.long)
         attention_mask = attention_mask.to(device, dtype = torch.long)
         token_type_ids = token_type_ids.to(device, dtype=torch.long)
-        target = target.to(device, dtype=torch.float)
+        target = target.to(device, dtype=torch.long)
 
         model.zero_grad()
 
         output = model(input_ids=input_ids, attention_mask = attention_mask, token_type_ids = token_type_ids)
+        print(f'Shapes - {output.shape}, {target.shape}')
+        print(output, target)
         loss = loss_fn(output, target)
+        print(f'Loss - {loss}')
+        print(output, target)
         train_losses.append(loss.item())
         output = torch.log_softmax(output, dim = 1)
         output = torch.argmax(output, dim = 1)
@@ -61,8 +65,9 @@ def train_fn(data_loader, model, optimizer, device, scheduler):
         final_output.append(output.flatten())
     final_target = torch.stack(final_target).detach().cpu()
     final_output = torch.stack(final_output).detach().cpu()
+    final_output = np.round(final_output)
     print(final_target, final_output)
-    accuracy = torchmetrics.Accuracy(final_output, final_target)
+    accuracy = accuracy_score(final_target, final_output)
     return accuracy, np.mean(train_losses)
 
 def eval_fn(data_loader, model, device):
@@ -82,7 +87,7 @@ def eval_fn(data_loader, model, device):
             input_ids = input_ids.to(device, dtype=torch.long)
             attention_mask = attention_mask.to(device, dtype=torch.long)
             token_type_ids = token_type_ids.to(device, dtype=torch.long)
-            target = target.to(device, dtype=torch.float)
+            target = target.to(device, dtype=torch.long)
 
             output = model(
                 input_ids=input_ids,

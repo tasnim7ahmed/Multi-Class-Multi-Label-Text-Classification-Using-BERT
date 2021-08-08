@@ -27,6 +27,6 @@ class BertSAUC(nn.Module):
         )
 
         bo = self.Bert_drop(o2)
-        output = torch.sigmoid(self.out(bo))
-
+        output = self.out(bo)
+        output = torch.sigmoid(output)
         return output

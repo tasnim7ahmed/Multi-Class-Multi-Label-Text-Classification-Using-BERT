@@ -51,6 +51,7 @@ def run():
     )
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = "cpu"
     model = BertSAUC()
     model = model.to(device)
 
