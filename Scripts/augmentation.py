@@ -266,9 +266,6 @@ if __name__=="__main__":
             for sentence in sentences:
                 comments.append(sentence)
                 labels.append(current_label)
-        else:
-            comments.append(current_comment)
-            labels.append(current_label)
     
     sample_count = [0,0,0,0,0,0,0,0]
     for label in labels:
@@ -281,5 +278,20 @@ if __name__=="__main__":
     aug_data = pd.DataFrame()
     aug_data["comment"] = comments
     aug_data["label"] = labels
+
+    aug_healthy = pd.DataFrame()
+    comments = []
+    labels = []
+    
+    for i in range(0,len(df.comment.values)):
+        current_comment = df.comment.values[i]
+        current_label = df[Label_Columns].values[i]
+        if(current_label[5]==1):
+            comments.append(current_comment)
+            labels.append(current_label)
+    aug_healthy["comment"] = comments
+    aug_healthy["label"] = labels
+    
+    aug_data.append(aug_healthy)
 
     aug_data.to_csv(args.aug_dataset_file)
