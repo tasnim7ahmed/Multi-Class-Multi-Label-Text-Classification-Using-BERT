@@ -16,11 +16,14 @@ def get_parser():
     parser.add_argument("--dropout", type=float, default=0.4, help="dropout")
     parser.add_argument("--seed", type=int, default=42, help="Seed for reproducibility")
 
+    parser.add_argument("--num_aug", default=10, required=False, type=int, help="number of augmented sentences per original sentence")
+    parser.add_argument("--alpha", default=0.15, required=False, type=float, help="percent of words in each sentence to be changed")
+
     parser.add_argument("--pretrained_tokenizer_name", default="bert-base-uncased", type=str, help='Name of the pretrained tokenizer')
     parser.add_argument("--pretrained_model_name", default="bert-base-uncased", type=str, help='Name of the pretrained model')
     parser.add_argument("--bert_hidden", default=768, type=int, help='Number of layer for Bert')
 
-    parser.add_argument("--dataset_file", default="../Dataset/dataset.csv", type=str, help='Path to dataset file')
+    parser.add_argument("--dataset_file", default="../Dataset/aug_train.csv", type=str, help='Path to dataset file')
     parser.add_argument("--model_path", default="../Models/", type=str, help='Save best model')
     parser.add_argument("--output_path", default="../Output/", type=str, help='Get predicted labels for test data')
 
