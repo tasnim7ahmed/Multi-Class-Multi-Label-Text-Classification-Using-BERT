@@ -240,12 +240,6 @@ def generate_eda(sentence, alpha, num_aug=1):
     return aug_sentences
 
 
-
-
-
-
-
-
 if __name__=="__main__":
     df = pd.read_csv(args.dataset_file).dropna()
     Label_Columns = df.columns.tolist()[3::2]
@@ -278,6 +272,8 @@ if __name__=="__main__":
     aug_data = pd.DataFrame()
     aug_data["comment"] = comments
     aug_data["label"] = labels
+    aug_data.to_csv(args.aug_dataset_file)
+    del aug_data
 
     aug_healthy = pd.DataFrame()
     comments = []
@@ -291,7 +287,8 @@ if __name__=="__main__":
             labels.append(current_label)
     aug_healthy["comment"] = comments
     aug_healthy["label"] = labels
+    aug_healthy.to_csv(args.aug_healthy_dataset_file)
     
-    aug_data.append(aug_healthy)
+    
 
-    aug_data.to_csv(args.aug_dataset_file)
+    
