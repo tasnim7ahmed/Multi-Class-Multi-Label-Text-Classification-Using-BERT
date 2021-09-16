@@ -247,7 +247,7 @@ def generate_eda(sentence, alpha, num_aug=1):
 
 
 if __name__=="__main__":
-    df = pd.read_csv('../Dataset/train.csv').dropna()
+    df = pd.read_csv(args.dataset_file).dropna()
     Label_Columns = df.columns.tolist()[3::2]
     print(len(Label_Columns))
     print(df[Label_Columns].sum().sort_values())
@@ -282,4 +282,4 @@ if __name__=="__main__":
     aug_data["comment"] = comments
     aug_data["label"] = labels
 
-    aug_data.to_csv("../Dataset/aug_train.csv")
+    aug_data.to_csv(args.aug_dataset_file)

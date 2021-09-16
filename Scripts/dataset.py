@@ -52,7 +52,11 @@ class Dataset:
 
 
 if __name__=="__main__":
-    df = pd.read_csv(args.dataset_file).dropna()
+    if(args.augmentation=="True"):
+        data_dir = args.aug_dataset_file
+    else:
+        data_dir = args.dataset_file
+    df = pd.read_csv(data_dir).dropna()
     print(df.head())
     dataset = Dataset(text=df.comment.values, target=df.label.values)
     print(dataset[0])

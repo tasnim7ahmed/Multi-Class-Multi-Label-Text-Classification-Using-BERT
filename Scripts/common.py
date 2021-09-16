@@ -23,7 +23,9 @@ def get_parser():
     parser.add_argument("--pretrained_model_name", default="bert-base-uncased", type=str, help='Name of the pretrained model')
     parser.add_argument("--bert_hidden", default=768, type=int, help='Number of layer for Bert')
 
-    parser.add_argument("--dataset_file", default="../Dataset/aug_train.csv", type=str, help='Path to dataset file')
+    parser.add_argument("--augmentation", default="True", type=str, help="Augmentation - True/False")
+    parser.add_argument("--dataset_file", default="../Dataset/train.csv", type=str, help='Path to dataset file')
+    parser.add_argument("--aug_dataset_file", default="../Dataset/aug_train.csv", type=str, help='Path to augmented dataset file')
     parser.add_argument("--model_path", default="../Models/", type=str, help='Save best model')
     parser.add_argument("--output_path", default="../Output/", type=str, help='Get predicted labels for test data')
 
