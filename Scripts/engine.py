@@ -28,7 +28,7 @@ def train_fn(data_loader, model, optimizer, device, scheduler):
     train_losses = []
     final_target = []
     final_output = []
-    cnt = 0
+    
     for ii, data in enumerate(progrss_bar):
         input_ids = data["input_ids"]
         attention_mask = data["attention_mask"]
@@ -60,9 +60,7 @@ def train_fn(data_loader, model, optimizer, device, scheduler):
         progrss_bar.set_postfix(loss = losses.avg)
         final_target.extend(target.cpu().detach().numpy().tolist())
         final_output.extend(output.cpu().detach().numpy().tolist())
-        cnt+=1
-        if(cnt>=50):
-            break
+        
     accuracy = torchmetrics.Accuracy()
     #auroc = torchmetrics.AUROC(num_classes=8)
     acc = (accuracy(torch.tensor(final_output), torch.tensor(final_target)))
