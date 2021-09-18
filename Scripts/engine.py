@@ -60,7 +60,6 @@ def train_fn(data_loader, model, optimizer, device, scheduler):
         progrss_bar.set_postfix(loss = losses.avg)
         final_target.extend(target.cpu().detach().numpy().tolist())
         final_output.extend(output.cpu().detach().numpy().tolist())
-        break
     accuracy = torchmetrics.Accuracy()
     #auroc = torchmetrics.AUROC(num_classes=8)
     acc = (accuracy(torch.tensor(final_output), torch.tensor(final_target)))
