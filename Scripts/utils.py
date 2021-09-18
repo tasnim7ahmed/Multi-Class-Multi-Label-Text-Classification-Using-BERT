@@ -51,6 +51,7 @@ def set_device():
     return device
 
 def calc_roc_auc(all_labels, all_logits):
+    print(all_labels, all_logits)
     attributes = [
     'antagonize' , 'condescending', 'dismissive', 'generalisation',
     'generalisation_unfair', 'healthy', 'hostile', 'sarcastic']
