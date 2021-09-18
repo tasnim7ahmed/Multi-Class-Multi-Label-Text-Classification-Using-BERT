@@ -3,7 +3,7 @@ import numpy as np
 from numpy.lib.function_base import average
 import torch
 import torchmetrics
-from sklearn.metrics import confusion_matrix, classification_report, matthews_corrcoef, f1_score, accuracy_score, precision_score, recall_score
+from sklearn.metrics import confusion_matrix, classification_report, matthews_corrcoef, f1_score, accuracy_score, precision_score, recall_score, roc_auc_score
 
 import dataset
 from engine import test_eval_fn
@@ -17,7 +17,6 @@ torch.cuda.manual_seed(args.seed)
 
 def test_evaluate(test_df, test_data_loader, model, device):
     y_pred, y_test = test_eval_fn(test_data_loader, model, device)
-
     acc = torchmetrics.Accuracy()
     precision = torchmetrics.Precision(num_classes = 8, average = 'weighted')
     recall = torchmetrics.Recall(num_classes = 8, average = 'weighted')

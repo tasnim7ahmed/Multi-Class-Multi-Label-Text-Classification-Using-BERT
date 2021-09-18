@@ -3,10 +3,11 @@ import torch.nn as nn
 from tqdm import tqdm
 import time
 import numpy as np
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, roc_auc_score
 import torchmetrics
 
 import utils
+from utils import calc_roc_auc
 from common import get_parser
 
 parser = get_parser()
@@ -59,8 +60,13 @@ def train_fn(data_loader, model, optimizer, device, scheduler):
         progrss_bar.set_postfix(loss = losses.avg)
         final_target.extend(target.cpu().detach().numpy().tolist())
         final_output.extend(output.cpu().detach().numpy().tolist())
+        break
     accuracy = torchmetrics.Accuracy()
+    #auroc = torchmetrics.AUROC(num_classes=8)
     acc = (accuracy(torch.tensor(final_output), torch.tensor(final_target)))
+    #print(auroc(torch.tensor(final_output), torch.tensor(final_target)))
+    calc_roc_auc(np.array(final_target), np.array(final_output))
+    
     return acc.item(), np.mean(train_losses)
 
 def eval_fn(data_loader, model, device):

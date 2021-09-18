@@ -1,3 +1,4 @@
+from numpy.lib.function_base import delete
 import pandas as pd;
 import numpy as np;
 import torch
@@ -9,7 +10,7 @@ import warnings
 import engine
 from model import BertSAUC
 from dataset import Dataset
-from utils import train_validate_test_split
+from utils import train_validate_test_split, set_device
 from common import get_parser
 from evaluate import test_evaluate
 
@@ -20,41 +21,54 @@ np.random.seed(args.seed)
 torch.manual_seed(args.seed)
 torch.cuda.manual_seed(args.seed)
 
+def generate_datasets():
+    train_path = ""
+    if(args.augmentation=="True"):
+        train_path = args.aug_train_file
+    else:
+        train_path = args.train_file
+    val_path = args.val_file
+    test_path = args.test_file
+
+    df = pd.read_csv(train_path).dropna()
+    train_dataset = Dataset(text=df.comment.values, target=df.label.values)
+    len_train = len(df)
+    del df
+    df = pd.read_csv(val_path).dropna()
+    val_dataset = Dataset(text=df.comment.values, target=df.label.values)
+    del df
+    df = pd.read_csv(test_path).dropna()
+    test_df = df
+    test_dataset = Dataset(text=df.comment.values, target=df.label.values)
+    del df
+
+    return train_dataset, val_dataset, test_dataset, len_train, test_df
+
 def run():
-    df = pd.read_csv(args.dataset_file).dropna()
-    train_df, valid_df, test_df = train_validate_test_split(df)
-
-    print("train len - {}, valid len - {}, test len - {}".format(len(train_df), len(valid_df),len(test_df)))
-
-    Label_Columns = train_df.columns.tolist()[3::2]
-    train_dataset = Dataset(text=train_df.comment.values, target=train_df[Label_Columns].values)
+    train_dataset, valid_dataset, test_dataset, len_train, test_df = generate_datasets()
     train_data_loader = torch.utils.data.DataLoader(
         dataset = train_dataset,
         batch_size = args.train_batch_size,
         shuffle = True
     )
 
-    Label_Columns = valid_df.columns.tolist()[3::2]
-    valid_dataset = Dataset(text=valid_df.comment.values, target=valid_df[Label_Columns].values)
     valid_data_loader = torch.utils.data.DataLoader(
         dataset = valid_dataset,
         batch_size = args.valid_batch_size,
         shuffle = True
     )
 
-    Label_Columns = test_df.columns.tolist()[3::2]
-    test_dataset = Dataset(text=test_df.comment.values, target=test_df[Label_Columns].values)
     test_data_loader = torch.utils.data.DataLoader(
         dataset = test_dataset,
         batch_size = args.test_batch_size,
         shuffle = False
     )
 
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = set_device()
     model = BertSAUC()
     model = model.to(device)
 
-    num_train_steps = int(len(train_df) / args.train_batch_size * args.epochs)
+    num_train_steps = int(len_train / args.train_batch_size * args.epochs)
     
     optimizer = AdamW(
         params = model.parameters(),

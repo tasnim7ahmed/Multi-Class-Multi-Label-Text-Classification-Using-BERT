@@ -15,6 +15,7 @@ def get_parser():
     parser.add_argument("--classes", default=8, type=int, help='Number of output classes')
     parser.add_argument("--dropout", type=float, default=0.4, help="dropout")
     parser.add_argument("--seed", type=int, default=42, help="Seed for reproducibility")
+    parser.add_argument("--device", type=str, default="gpu", help="Training device - cpu/gpu")
 
     parser.add_argument("--num_aug", default=10, required=False, type=int, help="number of augmented sentences per original sentence")
     parser.add_argument("--alpha", default=0.15, required=False, type=float, help="percent of words in each sentence to be changed")
@@ -24,10 +25,13 @@ def get_parser():
     parser.add_argument("--bert_hidden", default=768, type=int, help='Number of layer for Bert')
 
     parser.add_argument("--augmentation", default="True", type=str, help="Augmentation - True/False")
-    parser.add_argument("--dataset_file", default="../Dataset/train.csv", type=str, help='Path to dataset file')
-    parser.add_argument("--aug_dataset_file", default="../Dataset/aug_train.csv", type=str, help='Path to augmented dataset file')
+    parser.add_argument("--train_file", default="../Dataset/train.csv", type=str, help='Path to training dataset file')
+    parser.add_argument("--val_file", default="../Dataset/val.csv", type=str, help='Path to validation dataset file')
+    parser.add_argument("--test_file", default="../Dataset/test.csv", type=str, help='Path to testing dataset file')
+    parser.add_argument("--aug_train_file", default="../Dataset/aug_train.csv", type=str, help='Path to augmented dataset file')
     parser.add_argument("--aug_healthy_dataset_file", default="../Dataset/aug_healthy.csv", type=str, help='Path to augmented healthy dataset file')
     parser.add_argument("--model_path", default="../Models/", type=str, help='Save best model')
     parser.add_argument("--output_path", default="../Output/", type=str, help='Get predicted labels for test data')
+    parser.add_argument("--figure_path", default="../Figures/", type=str, help='Directory for accuracy and loss plots')
 
     return parser

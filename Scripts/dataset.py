@@ -50,12 +50,45 @@ class Dataset:
             "target":torch.tensor(format_label(self.target[item]), dtype = torch.long)
         }
 
+def generate_dsfile(path):
+    df = pd.read_csv(path).dropna()
+    Label_Columns = df.columns.tolist()[3::2]
+    print(len(Label_Columns))
+    print(df[Label_Columns].sum().sort_values())
+    categorized_comment = df[df[Label_Columns].sum(axis=1) > 0]
+    uncategorized_comment = df[df[Label_Columns].sum(axis=1) == 0]
+    print(f'Categorized - {len(categorized_comment)}, Uncategorized - {len(uncategorized_comment)}')
+
+    comments = []
+    labels = []
+    
+    for i in range(0,len(df.comment.values)):
+        current_comment = df.comment.values[i]
+        current_label = df[Label_Columns].values[i]
+        comments.append(current_comment)
+        labels.append(current_label)
+    
+    sample_count = [0,0,0,0,0,0,0,0]
+    for label in labels:
+        for i in range(0,len(label)):
+            if(label[i]==1):
+               sample_count[i]+=1 
+    print(sample_count)
+    
+
+    ds_data = pd.DataFrame()
+    ds_data["comment"] = comments
+    ds_data["label"] = labels
+    ds_data.to_csv("../Dataset/mod.csv")
+    del ds_data
+
 
 if __name__=="__main__":
+    #generate_dsfile("../Dataset/train.csv")
     if(args.augmentation=="True"):
-        data_dir = args.aug_dataset_file
+        data_dir = args.aug_train_file
     else:
-        data_dir = args.dataset_file
+        data_dir = args.train_file
     df = pd.read_csv(data_dir).dropna()
     print(df.head())
     dataset = Dataset(text=df.comment.values, target=df.label.values)
