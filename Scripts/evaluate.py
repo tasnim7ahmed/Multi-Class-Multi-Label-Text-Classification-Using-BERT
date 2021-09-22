@@ -6,6 +6,7 @@ import torchmetrics
 from sklearn.metrics import confusion_matrix, classification_report, matthews_corrcoef, f1_score, accuracy_score, precision_score, recall_score, roc_auc_score
 
 import dataset
+from utils import calc_roc_auc
 from engine import test_eval_fn
 from common import get_parser
 
@@ -29,6 +30,7 @@ def test_evaluate(test_df, test_data_loader, model, device):
     print('Precision::', precision_val.item())
     print('Recall::', recall_val.item())
     print('F_score::', f1_val.item())
+    calc_roc_auc(np.array(y_test), np.array(y_pred))
 
     test_df['y_pred'] = y_pred
     #pred_test = test_df[['text', 'label', 'target', 'y_pred']]
@@ -36,3 +38,4 @@ def test_evaluate(test_df, test_data_loader, model, device):
 
     conf_mat = torchmetrics.ConfusionMatrix(num_classes = 8, multilabel = True)
     print(conf_mat(torch.tensor(y_pred), torch.tensor(y_test)))
+    print(classification_report(y_test, y_pred))

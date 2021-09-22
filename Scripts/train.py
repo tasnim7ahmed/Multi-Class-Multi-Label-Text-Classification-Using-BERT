@@ -1,4 +1,5 @@
-from numpy.lib.function_base import delete
+from visualization import save_acc_curves, save_loss_curves
+
 import pandas as pd;
 import numpy as np;
 import torch
@@ -105,6 +106,8 @@ def run():
         if val_acc>best_acc:
             torch.save(model.state_dict(), f"{args.model_path}{args.pretrained_model_name}---val_acc---{val_acc}.bin")
 
+    save_acc_curves(history)
+    save_loss_curves(history)
     print("##################################### Testing ############################################")
     test_evaluate(test_df, test_data_loader, model, device)    
     del model, train_data_loader, valid_data_loader, train_dataset, valid_dataset
