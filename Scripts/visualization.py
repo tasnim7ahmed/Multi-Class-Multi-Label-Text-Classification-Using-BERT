@@ -13,7 +13,8 @@ def save_acc_curves(history):
     plt.xlabel('Epoch')
     plt.legend()
     plt.ylim([0, 1])
-    plt.savefig(f"{args.figure_path}{args.pretrained_model}---acc---.pdf")
+    plt.savefig(f"{args.figure_path}{args.pretrained_model_name}---acc---.pdf")
+    plt.clf()
 
 def save_loss_curves(history):
     plt.plot(history['train_loss'], label='train loss')
@@ -23,4 +24,5 @@ def save_loss_curves(history):
     plt.xlabel('Epoch')
     plt.legend()
     plt.ylim([0, 1])
-    plt.savefig(f"{args.figure_path}{args.pretrained_model}---loss---.pdf")
+    plt.savefig(f"{args.figure_path}{args.pretrained_model_name}---loss---.pdf")
+    plt.clf()

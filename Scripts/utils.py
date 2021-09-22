@@ -69,6 +69,7 @@ def calc_roc_auc(all_labels, all_logits):
     plt.legend(loc='lower right')
     plt.title('ROC Curve')
     plt.savefig(f"{args.figure_path}{args.pretrained_model_name}---roc_auc_curve---.pdf")
+    plt.clf()
     # Compute micro-average ROC curve and ROC area
     fpr["micro"], tpr["micro"], _ = roc_curve(all_labels.ravel(), all_logits.ravel())
     roc_auc["micro"] = auc(fpr["micro"], tpr["micro"])
