@@ -38,4 +38,4 @@ def test_evaluate(test_df, test_data_loader, model, device):
 
     conf_mat = torchmetrics.ConfusionMatrix(num_classes = 8, multilabel = True)
     print(conf_mat(torch.tensor(y_pred), torch.tensor(y_test)))
-    print(classification_report(y_test, y_pred))
+    print(classification_report(y_test, np.around(y_pred)))
